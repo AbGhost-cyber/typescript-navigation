@@ -3,15 +3,14 @@ import { StyleSheet, Text, View } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { NavProps, ParamsList } from "../routes/ParamsList";
 
-const Home = ({ navigation, route }: NavProps<"Home">) => {
+const FavoritesScreen = ({ navigation, route }: NavProps<"Favorites">) => {
   return (
-    <View>
-      <Text></Text>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Hello Favs</Text>
     </View>
   );
 };
 
-export default Home;
+export default FavoritesScreen;
 
 const styles = StyleSheet.create({});
-
