@@ -11,10 +11,11 @@ import { ParamsList } from "./ParamsList";
 import FavoritesScreen from "../screens/FavoritesScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import SearchScreen from "../screens/SearchScreen";
+import TabBarButton from "../components/TabBarButton";
 
 interface AppTabsProps {}
 
-type IconName = {
+export type IconName = {
   icon: keyof typeof Ionicons.glyphMap;
 };
 
@@ -49,8 +50,9 @@ export const TabBar: FC<AppTabsProps> = () => {
           fontFamily: "product-sans-bold",
           fontSize: 11,
         },
+        showLabel: false,
         activeTintColor: "white",
-        inactiveTintColor: "grey",
+        inactiveTintColor: "black",
       }}
     >
       <BottomTab.Screen name="Home" component={HomeScreen} />
@@ -77,7 +79,7 @@ const styles = StyleSheet.create({
   },
   navigator: {
     borderTopWidth: 0,
-    backgroundColor: "#131664",
+    backgroundColor: "#2a5a77",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
   },

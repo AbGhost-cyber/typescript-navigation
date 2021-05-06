@@ -5,7 +5,7 @@ import AppLoading from "expo-app-loading";
 import { enableScreens } from "react-native-screens";
 
 import { TabBar } from "./routes/Routes";
-
+import { BottomBars } from "./routes/CustomRoute";
 enableScreens();
 
 const fetchFonts = () => {
@@ -29,7 +29,7 @@ export default function App() {
   }
   return (
     <NavigationContainer>
-      <TabBar />
+      <BottomBars />
     </NavigationContainer>
   );
 }
