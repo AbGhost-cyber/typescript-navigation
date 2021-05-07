@@ -5,9 +5,14 @@ import { NavProps, ParamsList } from "../routes/ParamsList";
 
 const FavoritesScreen = ({ navigation, route }: NavProps<"Favorites">) => {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Hello Favs</Text>
-    </View>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "yellow",
+      }}
+    />
   );
 };
 

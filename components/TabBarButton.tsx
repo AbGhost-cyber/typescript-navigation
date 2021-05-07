@@ -9,7 +9,7 @@ import {
   Text,
 } from "react-native";
 import { IconName } from "../routes/Routes";
-import { Easing } from "react-native-reanimated";
+import Ripple from "react-native-material-ripple";
 
 interface TabBarButtonProps {
   iconTint: ColorValue;
@@ -23,7 +23,6 @@ interface TabBarButtonProps {
 
 const TabBarButton: FC<TabBarButtonProps> = (props) => {
   let opacity = useRef(new Animated.Value(0)).current;
-  let width = useRef(new Animated.Value(1)).current;
 
   //animate on start aside when being pressed
   useEffect(() => {
@@ -41,8 +40,10 @@ const TabBarButton: FC<TabBarButtonProps> = (props) => {
   }, [opacity]);
 
   return (
-    <TouchableOpacity
-      activeOpacity={2}
+    <Ripple
+      rippleColor={props.iconTint.toString()}
+      rippleCentered
+      rippleDuration={400}
       onPress={() => {
         props.onPress();
         animateTabItem();
@@ -53,6 +54,7 @@ const TabBarButton: FC<TabBarButtonProps> = (props) => {
           styles.parent,
           {
             backgroundColor: props.isFocused ? props.bgTintColor : undefined,
+            flexDirection: "row",
             transform:
               props.isFocused && !props.isFirst
                 ? [
@@ -96,7 +98,7 @@ const TabBarButton: FC<TabBarButtonProps> = (props) => {
           <Ionicons
             name={props.icon}
             size={24}
-            color={props.isFocused ? props.iconTint : "grey"}
+            color={props.isFocused ? props.iconTint : "black"}
           />
         </Animated.View>
 
@@ -114,7 +116,7 @@ const TabBarButton: FC<TabBarButtonProps> = (props) => {
           </Animated.Text>
         )}
       </Animated.View>
-    </TouchableOpacity>
+    </Ripple>
   );
 };
 
@@ -123,10 +125,8 @@ export default TabBarButton;
 const styles = StyleSheet.create({
   parent: {
     flexDirection: "row",
-    borderRadius: 20,
+    borderRadius: 30,
     paddingVertical: 14,
     justifyContent: "center",
-    width: 110,
-    // alignItems: "center",
   },
 });

@@ -1,69 +1,93 @@
-import React, { PureComponent } from 'react';
-import { Animated, Button, Easing, View, Text, StyleSheet } from 'react-native';
+import React, { useCallback, useRef, useState } from "react";
+import {
+  Animated,
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  TextInput,
+  SafeAreaView,
+} from "react-native";
+import Ripple from "react-native-material-ripple";
+import FA from "@expo/vector-icons/FontAwesome5";
 
-class AnimateBox extends PureComponent {
-  state = { opacity: new Animated.Value(0), height: new Animated.Value(0) };
+const AnimatedIcon = Animated.createAnimatedComponent(FA);
+const TabBarSample = () => {
+  const animatedValue = useRef(new Animated.Value(0)).current;
+  const interpolateIcon = animatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 1],
+  });
 
-  showContent = () => {
-    const { opacity, height } = this.state;
+  const interpolateBar = animatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["100%", "90%"],
+  });
 
-    Animated.timing(height, {
-      toValue: 1,
-      duration: 500,
-      easing: Easing.linear,
-      useNativeDriver: false  // <-- neccessary
-    }).start(() => {
-      Animated.timing(opacity, {
-        toValue: 1,
-        duration: 500,
-        easing: Easing.linear,
-        useNativeDriver: false  // <-- neccessary
-      }).start();
-    });
-  };
+  const animatedTransition = Animated.spring(animatedValue, {
+    toValue: 1,
+    useNativeDriver: false,
+  });
+  const [anim, setAnim] = useState(false);
 
-  render() {
-    const { opacity, height } = this.state;
-    const maxHeight = height.interpolate({ 
-      inputRange: [0, 1], 
-      outputRange: [0, 1000]  // <-- value that larger than your content's height
-    });
+  const handleAnim = useCallback(() => {
+    setAnim((prevState) => !prevState);
+    if (anim) {
+      animatedTransition.start();
+    } else {
+      animatedTransition.reset();
+    }
+  }, [anim]);
 
-    return (
-      <View style={styles.box}>
-        <Animated.View style={{ opacity: opacity, maxHeight: maxHeight }}>
-          <Text style={styles.content}>
-            Lorem Ipsum is simply a dummy text of the printing and typesetting industry.
-            Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
-            when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-            It has survived not only five centuries, but also the leap into electronic typesetting,
-            remaining essentially unchanged. It was popularised in the 1960s with the release of
-            Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-          </Text>
-        </Animated.View>
-        <View style={styles.spacing}>
-          <Button title="Show content" onPress={this.showContent} />
+  return (
+    <SafeAreaView>
+      <View style={styles.container}>
+        <View style={styles.search}>
+          <Animated.View style={{ width: interpolateBar }}>
+            <TextInput placeholder="search here" style={styles.input} />
+          </Animated.View>
+          <AnimatedIcon
+            name="search"
+            size={28}
+            style={{
+              paddingLeft: 10,
+              paddingRight: 10,
+              transform: [
+                {
+                  scale: interpolateIcon,
+                },
+              ],
+            }}
+          />
         </View>
+        <Button title="animate icon" onPress={() => handleAnim()} />
       </View>
-    );
-  }
-}
+    </SafeAreaView>
+  );
+};
+
+export default TabBarSample;
 
 const styles = StyleSheet.create({
-  box: {
-    backgroundColor: '#fff',
-    marginHorizontal: 15,
-    paddingHorizontal: 15
+  input: {
+    width: "100%",
+    height: 40,
+    backgroundColor: "gray",
+    textAlign: "center",
   },
-  spacing: {
-    paddingVertical: 10
+  container: {
+    backgroundColor: "#F79D42",
+    // flex: 1,
+    height: "100%",
+    paddingTop: 20,
+    flexDirection: "column",
+    // justifyContent: 'center',
+    alignItems: "center",
   },
-  content: {
-    fontSize: 16,
-    lineHeight: 30,
-    color: '#555'
-  }
+  search: {
+    flexDirection: "row-reverse",
+    width: "90%",
+    height: 40,
+    alignItems: "center",
+  },
 });
-
-
-export default AnimateBox;

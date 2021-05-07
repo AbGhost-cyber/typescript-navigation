@@ -1,11 +1,16 @@
-import React, { FC } from "react";
+import React, { FC, useRef } from "react";
 import {
   createBottomTabNavigator,
-  BottomTabBar,
   BottomTabBarProps,
+  BottomTabNavigationOptions,
 } from "@react-navigation/bottom-tabs";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  Animated,
+  StyleProp,
+  TextStyle,
+} from "react-native";
 
 import HomeScreen from "../screens/HomeScreen";
 import { ParamsList } from "./ParamsList";
@@ -15,11 +20,23 @@ import SearchScreen from "../screens/SearchScreen";
 import TabBarButton from "../components/TabBarButton";
 import { IconName } from "./Routes";
 
-const Tab = createBottomTabNavigator<ParamsList>();
+type myThings = {
+  iconTint: string;
+  bgColor: string;
+  iconName: IconName["icon"];
+};
+interface m extends BottomTabBarProps {
+  myOptions: BottomTabNavigationOptions & myThings;
+}
 
 const MyTabBar: FC<BottomTabBarProps> = (props) => {
+  const animatedValue = useRef(new Animated.Value(0)).current;
+  // const interpolateBar = animatedValue.interpolate({
+  //   inputRange: [0, 1],
+  //   outputRange: ["100%", "90%"],
+  // });
   return (
-    <View style={styles.container}>
+    <Animated.View style={[styles.container]}>
       {props.state.routes.map((route, index) => {
         const { options } = props.descriptors[route.key];
         const label =
@@ -30,6 +47,12 @@ const MyTabBar: FC<BottomTabBarProps> = (props) => {
             : route.name;
 
         const isFocused = props.state.index === index;
+        // const {backgroundColor} = options.tabBarBadgeStyle;
+
+        const m = (options.tabBarBadgeStyle as unknown) as TextStyle;
+        console.log(m.color);
+
+        //emit event to the child screen
         const event = props.navigation.emit({
           type: "tabPress",
           target: route.key,
@@ -65,14 +88,13 @@ const MyTabBar: FC<BottomTabBarProps> = (props) => {
             accessibilityLabel={options.tabBarAccessibilityLabel}
             testID={options.tabBarTestID}
             onLongPress={onLongPress}
-            //style={{ flex: 1/2 }}
-            style={{ width: 118, marginEnd: 4, flexWrap: "wrap" }}
+            style={{ width: isFocused ? 120 : 80 }}
           >
             <TabBarButton
               iconTint="#5841AB"
               icon={configureIcon()}
               bgTintColor="#BDB0DC"
-              onPress={onPress}
+              onPress={() => onPress()}
               isFocused={isFocused}
               text={label.toString()}
               isFirst={props.state.index === 0}
@@ -80,9 +102,11 @@ const MyTabBar: FC<BottomTabBarProps> = (props) => {
           </TouchableOpacity>
         );
       })}
-    </View>
+    </Animated.View>
   );
 };
+
+const Tab = createBottomTabNavigator<ParamsList>();
 
 export const BottomBars: FC = () => {
   return (
@@ -90,7 +114,16 @@ export const BottomBars: FC = () => {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Favorites" component={FavoritesScreen} />
       <Tab.Screen name="Search" component={SearchScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          tabBarBadgeStyle: {
+            backgroundColor: "#BDB0DC",
+            color: "#0000",
+          },
+        }}
+      />
     </Tab.Navigator>
   );
 };
@@ -103,8 +136,7 @@ const styles = StyleSheet.create({
     height: 70,
     alignItems: "flex-end",
     marginBottom: 9,
-    justifyContent: "space-around",
     width: "100%",
-    flex: 1,
+    justifyContent: "space-between",
   },
 });
